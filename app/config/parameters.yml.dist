@@ -1,0 +1,9 @@
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+parameters:
+    mongodb_server: 'mongodb://localhost:27017'
+    mongodb_default_database: Mlp
+    mongodb_ssl_mode: true
+    mongodb_username: mlpuser
+    mongodb_password: ~
