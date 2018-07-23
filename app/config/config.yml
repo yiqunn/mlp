@@ -56,28 +56,14 @@ doctrine_mongodb:
                 ssl: "%mongodb_ssl_mode%"
                 username: "%mongodb_username%"
                 password: "%mongodb_password%"
-            driver_options:
-                context: "app.mongodb.context_service"
+            #driver_options:
+                #context: "app.mongodb.context_service"
     document_managers:
         default:
             connection: default
             database: "%mongodb_default_database%"
             auto_mapping: false
             mappings:
-	        AppBundle: ~
+                AppBundle: ~
 
 # Swiftmailer Configuration
-swiftmailer:
-    default_mailer: sendgrid_mailer
-    mailers:
-        test_mailer:
-            transport:  "%mailer_transport%"
-            encryption: "%mailer_encryption%"
-            auth_mode:  "%mailer_auth_mode%"
-            host:       "%mailer_host%"
-            username:   "%mailer_user%"
-            password:   "%mailer_password%"
-            #spool:      { type: memory }
-            spool:
-                type: file
-                path: "%kernel.root_dir%/../var/spool/email"
