@@ -10,10 +10,13 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  * )
  * @MongoDB\Indexes({
  *   @MongoDB\Index(keys={"subName"="asc"}),
- *   @MongoDB\Index(keys={"accuracy"="asc"}),
+ *   @MongoDB\Index(keys={"accuracy.training"="asc"}),
+ *   @MongoDB\Index(keys={"accuracy.test"="asc"}),
  *   @MongoDB\Index(keys={"feature_names"="asc"}), 
  *   @MongoDB\Index(keys={"train_start_time"="asc", "train_stop_time"="asc"}),
  *   @MongoDB\Index(keys={"train_stop_time"="asc"}),
+ *   @MongoDB\Index(keys={"dataSource.training"="asc"}),
+ *   @MongoDB\Index(keys={"dataSource.test"="asc"}),
  *   @MongoDB\Index(keys={"model_group"="asc"}),
  *   @MongoDB\Index(keys={"training_methods"="asc"}),
  *   @MongoDB\Index(keys={"optimization_methods"="asc"}),
@@ -33,7 +36,7 @@ class Model
     
 
     /**
-     * @MongoDB\Field(type="float")
+     * @MongoDB\Field(type="hash")
      */
     protected $accuracy;
 
@@ -73,6 +76,11 @@ class Model
      * @MongoDB\Field(type="hash")                                                                                                                                                                   
      */
     protected $machine_powers;
+
+    /**                                                                                                                                                                                                  
+     * @MongoDB\Field(type="hash")                                                                                                                                                                   
+     */
+    protected $dataSource;
 
 
 
