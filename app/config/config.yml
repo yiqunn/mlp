@@ -1,0 +1,67 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+parameters:
+    locale: en
+
+framework:
+    secret: '%secret%'
+    router:
+        resource: '%kernel.project_dir%/app/config/routing.yml'
+        strict_requirements: ~
+    form: ~
+    csrf_protection: ~
+    validation: { enable_annotations: true }
+    default_locale: '%locale%'
+    trusted_hosts: ~
+    session:
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+    fragments: ~
+    http_method_override: true
+    assets: ~
+    php_errors:
+        log: true
+
+# Twig Configuration
+twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        host: '%database_host%'
+        port: '%database_port%'
+        dbname: '%database_name%'
+        user: '%database_user%'
+        password: '%database_password%'
+        charset: UTF8
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+
+doctrine_mongodb:
+    default_database: "%mongodb_default_database%"
+    default_connection: default
+    default_document_manager: default
+    connections:
+        default:
+            server: "%mongodb_server%/%mongodb_default_database%"
+            options:
+                ssl: "%mongodb_ssl_mode%"
+                username: "%mongodb_username%"
+                password: "%mongodb_password%"
+            driver_options:
+                context: "app.mongodb.context_service"
+    document_managers:
+        default:
+            connection: default
+            database: "%mongodb_default_database%"
+            auto_mapping: false
+            mappings:
+	        AppBundle: ~
