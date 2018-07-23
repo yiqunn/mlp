@@ -1,0 +1,54 @@
+<?php
+namespace ModelServiceBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+
+/**
+ * @MongoDB\Document(
+ *   collection="modelGroups",
+ * )
+ * @MongoDB\Indexes({
+ *   @MongoDB\Index(keys={"name"="asc"}),
+ *   @MongoDB\Index(keys={"accuracy"="asc"}),
+ *   @MongoDB\Index(keys={"owner"="asc"}), 
+ *   @MongoDB\Index(keys={"current_version"="asc"}),
+ *   @MongoDB\Index(keys={"algorithm"="asc"}),
+ *  })
+ */
+class ModelGroup
+{
+    /**
+     * @MongoDB\Id
+     */
+    protected $id;
+    
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $name;
+    
+    /**
+     * @MongoDB\Field(type="float")
+     */
+    protected $accuracy;
+
+    /**                                                                                                                                                                                                    
+     * @MongoDB\Field(type="string")                                                                                                                                                                   
+     */
+    protected $owner;
+
+    /**                                                                                                                                                                                                    
+     * @MongoDB\Field(type="string")                                                                                                                                                                   
+     */
+    protected $algorithm;
+
+    /**                                                                                                                                                                                                    
+     * @MongoDB\ReferenceOne(targetDocument="ModelServiceBundle\Document\Model",
+     *                       simple=true)                                                                                                                                                                  
+     */
+    protected $current_version;
+
+    
+
+
+}
