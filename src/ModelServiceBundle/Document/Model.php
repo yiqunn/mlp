@@ -291,4 +291,26 @@ class Model
     {
         return $this->machine_powers;
     }
+
+    /**
+     * Set dataset
+     *
+     * @param hash $dataset
+     * @return $this
+     */
+    public function setDataset($dataset)
+    {
+        $this->dataset = $dataset;
+        return $this;
+    }
+
+    /**
+     * Get dataset
+     *
+     * @return hash $dataset
+     */
+    public function getDataset()
+    {
+        return $this->dataset;
+    }
 }

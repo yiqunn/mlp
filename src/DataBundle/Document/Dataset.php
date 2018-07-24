@@ -49,4 +49,124 @@ class Dataset
      */
     protected $parseFunc;
         
+
+    /**
+     * Get id
+     *
+     * @return id $id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set locations
+     *
+     * @param hash $locations
+     * @return $this
+     */
+    public function setLocations($locations)
+    {
+        $this->locations = $locations;
+        return $this;
+    }
+
+    /**
+     * Get locations
+     *
+     * @return hash $locations
+     */
+    public function getLocations()
+    {
+        return $this->locations;
+    }
+
+    /**
+     * Set columns
+     *
+     * @param collection $columns
+     * @return $this
+     */
+    public function setColumns($columns)
+    {
+        $this->columns = $columns;
+        return $this;
+    }
+
+    /**
+     * Get columns
+     *
+     * @return collection $columns
+     */
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    /**
+     * Set size
+     *
+     * @param float $size
+     * @return $this
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return float $size
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * Set dataSource
+     *
+     * @param DataBundle\Document\DataSource $dataSource
+     * @return $this
+     */
+    public function setDataSource(\DataBundle\Document\DataSource $dataSource)
+    {
+        $this->dataSource = $dataSource;
+        return $this;
+    }
+
+    /**
+     * Get dataSource
+     *
+     * @return DataBundle\Document\DataSource $dataSource
+     */
+    public function getDataSource()
+    {
+        return $this->dataSource;
+    }
+
+    /**
+     * Set parseFunc
+     *
+     * @param string $parseFunc
+     * @return $this
+     */
+    public function setParseFunc($parseFunc)
+    {
+        $this->parseFunc = $parseFunc;
+        return $this;
+    }
+
+    /**
+     * Get parseFunc
+     *
+     * @return string $parseFunc
+     */
+    public function getParseFunc()
+    {
+        return $this->parseFunc;
+    }
 }

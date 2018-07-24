@@ -33,7 +33,8 @@ class ModelGroup
     protected $accuracy;
 
     /**                                                                                                                                                                                                    
-     * @MongoDB\Field(type="string")                                                                                                                                                                   
+     * @MongoDB\ReferenceOne(targetDocument="UserBundle\Document\Owner",
+     *                       simple=true)                                                                                                                                                              
      */
     protected $owner;
 

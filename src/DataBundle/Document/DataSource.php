@@ -44,4 +44,102 @@ class DataSource
      */
     protected $dataSourceGroup;
 
+
+    /**
+     * Get id
+     *
+     * @return id $id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set locations
+     *
+     * @param hash $locations
+     * @return $this
+     */
+    public function setLocations($locations)
+    {
+        $this->locations = $locations;
+        return $this;
+    }
+
+    /**
+     * Get locations
+     *
+     * @return hash $locations
+     */
+    public function getLocations()
+    {
+        return $this->locations;
+    }
+
+    /**
+     * Set columns
+     *
+     * @param collection $columns
+     * @return $this
+     */
+    public function setColumns($columns)
+    {
+        $this->columns = $columns;
+        return $this;
+    }
+
+    /**
+     * Get columns
+     *
+     * @return collection $columns
+     */
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    /**
+     * Set size
+     *
+     * @param float $size
+     * @return $this
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return float $size
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * Set dataSourceGroup
+     *
+     * @param DataBundle\Document\DataSourceGroup $dataSourceGroup
+     * @return $this
+     */
+    public function setDataSourceGroup(\DataBundle\Document\DataSourceGroup $dataSourceGroup)
+    {
+        $this->dataSourceGroup = $dataSourceGroup;
+        return $this;
+    }
+
+    /**
+     * Get dataSourceGroup
+     *
+     * @return DataBundle\Document\DataSourceGroup $dataSourceGroup
+     */
+    public function getDataSourceGroup()
+    {
+        return $this->dataSourceGroup;
+    }
 }
