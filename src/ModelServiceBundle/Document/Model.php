@@ -15,8 +15,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   @MongoDB\Index(keys={"feature_names"="asc"}), 
  *   @MongoDB\Index(keys={"train_start_time"="asc", "train_stop_time"="asc"}),
  *   @MongoDB\Index(keys={"train_stop_time"="asc"}),
- *   @MongoDB\Index(keys={"dataSource.training"="asc"}),
- *   @MongoDB\Index(keys={"dataSource.test"="asc"}),
+ *   @MongoDB\Index(keys={"dataset.training"="asc"}),
+ *   @MongoDB\Index(keys={"dataset.test"="asc"}),
  *   @MongoDB\Index(keys={"model_group"="asc"}),
  *   @MongoDB\Index(keys={"training_methods"="asc"}),
  *   @MongoDB\Index(keys={"optimization_methods"="asc"}),
@@ -80,7 +80,7 @@ class Model
     /**                                                                                                                                                                                                  
      * @MongoDB\Field(type="hash")                                                                                                                                                                   
      */
-    protected $dataSource;
+    protected $dataset;
 
 
 

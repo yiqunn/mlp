@@ -1,128 +1,23 @@
 <?php
 namespace ModelServiceBundle\Document;
+use ModelServiceBundle\Document\Parameter;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-// we still need hyperparamters and initiation parameters
 
 /**
  * @MongoDB\Document(
- *   collection="initiationParameters",
+ *   collection="parameters",
  * )
- * @MongoDB\Indexes({
- *   @MongoDB\Index(keys={"name"="asc"}),
- *   @MongoDB\Index(keys={"models"="asc"}),
- *  })
  */
-class InitiationParameter
+class InitiationParameter extend Parameter
 {
-    /**
-     * @MongoDB\Id
-     */
-    protected $id;
-    
-    /**
-     * @MongoDB\Field(type="string")
-     */
-    protected $name;
-    
-
-    /**
-     * @MongoDB\Field(type="float")
-     */
-    protected $value;
-
     /**                                                                                                                                                                                                    
-     * @MongoDB\ReferenceMany(targetDocument="ModelServiceBundle\Document\ModelGroup",
-     *                       simple=true)                                                                                                                                                                  
+     * @MongoDB\Field(type="string")                                                                                                                                                                   
      */
-    protected $models;
+    protected $strategy;
 
-    public function __construct()
-    {
-        $this->models = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
-    /**
-     * Get id
-     *
-     * @return id $id
-     */
-    public function getId()
-    {
-        return $this->id;
+    public function getParamType() {
+	return EnumParamType::initiation;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string $name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set value
-     *
-     * @param float $value
-     * @return $this
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-        return $this;
-    }
-
-    /**
-     * Get value
-     *
-     * @return float $value
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * Add model
-     *
-     * @param ModelServiceBundle\Document\ModelGroup $model
-     */
-    public function addModel(\ModelServiceBundle\Document\ModelGroup $model)
-    {
-        $this->models[] = $model;
-    }
-
-    /**
-     * Remove model
-     *
-     * @param ModelServiceBundle\Document\ModelGroup $model
-     */
-    public function removeModel(\ModelServiceBundle\Document\ModelGroup $model)
-    {
-        $this->models->removeElement($model);
-    }
-
-    /**
-     * Get models
-     *
-     * @return \Doctrine\Common\Collections\Collection $models
-     */
-    public function getModels()
-    {
-        return $this->models;
-    }
 }
