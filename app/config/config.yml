@@ -10,6 +10,14 @@ imports:
 parameters:
     locale: en
 
+services:
+    monolog.formatter.mlp:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] %%channel%%.%%level_name%%: %%message%%\n"
+            - "m/d/y H:i:s"  # date format as a second argument
+
+
 framework:
     secret: '%secret%'
     router:
@@ -73,3 +81,28 @@ doctrine_mongodb:
                 UserBundle: ~
 
 # Swiftmailer Configuration
+# Monolog Configuration
+
+# trial configuration for hc
+monolog:
+    handlers:
+        mlp:
+            type: fingers_crossed
+            channels: [mlp_ms, mlp_us]
+            action_level: debug
+            buffer_size: 1000
+            handler: buffered
+        buffered:
+            type: buffer
+            buffer_size: 1000
+            flush_on_overflow: true
+            handler: mlp_logger
+        mlp_logger:
+            type: stream
+            path: "%kernel.logs_dir%/mlp.log"
+            #level: error  # this controls the min level in the log file
+            formatter: monolog.formatter.mlp
+        syslog:
+            type: stream
+            path: "%kernel.logs_dir%/error.log"
+            level: error

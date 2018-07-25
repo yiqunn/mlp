@@ -1,4 +1,15 @@
+parameters:
+  # user  manager
+  user_manager.class: UserBundle\Service\UserManager
+
 services:
-#    user.example:
-#        class: UserBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+  # user manager (vendor agnostic)
+  user_manager:
+    class: '%user_manager.class%'
+    # use direct dependency injection for logger
+    arguments: ['@logger', '%kernel.root_dir%']
+    tags:
+      - { name: monolog.logger, channel: mlp_us }
+    # use setter dependency injection for other dependencies
+    calls:
+      - [setDocumentManager, ['@doctrine_mongodb.odm.document_manager']]

@@ -1,4 +1,16 @@
+parameters:
+  # model service manager
+  model_service_manager.class: ModelServiceBundle\Service\ModelServiceManager
+
 services:
-#    model_service.example:
-#        class: ModelServiceBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+  # model service manager (vendor agnostic)
+  model_service_manager:
+    class: '%model_service_manager.class%'
+    # use direct dependency injection for logger
+    arguments: ['@logger', '%kernel.root_dir%']
+    tags:
+      - { name: monolog.logger, channel: mlp_ms }
+    # use setter dependency injection for other dependencies
+    calls:
+      - [setDocumentManager, ['@doctrine_mongodb.odm.document_manager']]
+      - [setUserManager, ['@user_manager']]
