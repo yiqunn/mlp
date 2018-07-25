@@ -28,12 +28,10 @@ class UserManager {
     }
 
     public function createOwner($name, $phoneNumber, $email, $permission="read") {
-	// YN: 072218, find if member with name, phone number and email has been create before
+	// YN: 072218, find if member with name  has been create before
 	$owner = $this->dm->getRepository("UserBundle:Owner")
 	    ->createQueryBuilder()
 	    ->field('name')->equals($name)
-	    ->field('phoneNumber')->equals($phoneNumber)
-	    ->field('email')->equals($email)
 	    ->getQuery()
 	    ->getSingleResult();
 	

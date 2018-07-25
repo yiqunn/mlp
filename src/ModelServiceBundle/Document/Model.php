@@ -9,7 +9,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   collection="models",
  * )
  * @MongoDB\Indexes({
- *   @MongoDB\Index(keys={"name"="asc"}),
+ *   @MongoDB\Index(keys={"subName"="asc"}),
  *   @MongoDB\Index(keys={"accuracy"="asc"}),
  *   @MongoDB\Index(keys={"feature_names"="asc"}), 
  *   @MongoDB\Index(keys={"train_start_time"="asc", "train_stop_time"="asc"}),
@@ -17,6 +17,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   @MongoDB\Index(keys={"dataset.training"="asc"}),
  *   @MongoDB\Index(keys={"dataset.test"="asc"}),
  *   @MongoDB\Index(keys={"model_group"="asc"}),
+ *   @MongoDB\Index(keys={"active"="asc"}),
  *   @MongoDB\Index(keys={"training_methods"="asc"}),
  *   @MongoDB\Index(keys={"optimization_methods"="asc"}),
  *  })
@@ -28,16 +29,17 @@ class Model
      */
     protected $id;
     
-    /**
-     * @MongoDB\Field(type="string")
-     */
-    protected $name;
     
 
     /**
      * @MongoDB\Field(type="float")
      */
     protected $accuracy;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $subName;
 
     /**
      * @MongoDB\Field(type="collection")
@@ -53,6 +55,12 @@ class Model
      * @MongoDB\Field(type="date")                                                                                                                                                                   
      */
     protected $training_end_time;
+
+
+    /**                                                                                                                                                                                                    
+     * @MongoDB\Field(type="boolean")                                                                                                                                                                   
+     */
+    protected $active;
 
     /**                                                                                                                                                                                                    
      * @MongoDB\ReferenceOne(targetDocument="ModelServiceBundle\Document\ModelGroup",
@@ -88,6 +96,21 @@ class Model
 
 
 
+
+
+    public function __construct($subName, $modelGroup, $accuracy=null, $feature_names=null,
+				$hyperparameters=null, $train_start_time=null, $train_stop_time=null)
+    {
+	$this->subName = $subName;
+	$this->modelGroup = $modelGroup;
+	$this->accuracy = $accuracy;
+	$this->feature_names = $feature_names;
+	$this->hyperparameters = $hyperparameters;
+	$this->train_start_time = $train_start_time;
+	$this->train_stop_time = $train_stop_time;
+        return $this;
+    }
+
     /**
      * Get id
      *
@@ -96,28 +119,6 @@ class Model
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string $name
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -338,5 +339,49 @@ class Model
     public function getHyperparameters()
     {
         return $this->hyperparameters;
+    }
+
+    /**
+     * Set subName
+     *
+     * @param string $subName
+     * @return $this
+     */
+    public function setSubName($subName)
+    {
+        $this->subName = $subName;
+        return $this;
+    }
+
+    /**
+     * Get subName
+     *
+     * @return string $subName
+     */
+    public function getSubName()
+    {
+        return $this->subName;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return $this
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean $active
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
 }

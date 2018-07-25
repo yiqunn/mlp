@@ -10,7 +10,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  * @MongoDB\Indexes({
  *   @MongoDB\Index(keys={"name"="asc"}),
  *   @MongoDB\Index(keys={"accuracy"="asc"}),
- *   @MongoDB\Index(keys={"owner"="asc"}), 
+ *   @MongoDB\Index(keys={"owner"="asc"}),
+ *   @MongoDB\Index(keys={"active"="asc"}), 
  *   @MongoDB\Index(keys={"current_version"="asc"}),
  *   @MongoDB\Index(keys={"algorithm"="asc"}),
  *  })
@@ -32,6 +33,12 @@ class ModelGroup
      */
     protected $accuracy;
 
+
+    /**                                                                                                                                                                                                    
+     * @MongoDB\Field(type="boolean")                                                                                                                                                                   
+     */
+    protected $active;
+
     /**                                                                                                                                                                                                    
      * @MongoDB\ReferenceOne(targetDocument="UserBundle\Document\Owner",
      *                       simple=true)                                                                                                                                                              
@@ -44,6 +51,11 @@ class ModelGroup
     protected $algorithm;
 
     /**                                                                                                                                                                                                    
+     * @MongoDB\Field(type="integer")                                                                                                                                                                   
+     */
+    protected $activeModels;
+
+    /**                                                                                                                                                                                                    
      * @MongoDB\ReferenceOne(targetDocument="ModelServiceBundle\Document\Model",
      *                       simple=true)                                                                                                                                                                  
      */
@@ -53,6 +65,28 @@ class ModelGroup
 
 
 
+    public function __construct($name, $owner)
+    {
+	$this->name = $name;
+	$this->owner = $owner;
+	$this->active = true;
+	$this->activeModels = 0;
+        return $this;
+    }
+
+    public function addOneActiveModel() {
+	$this->active = true;
+	$this->activeModels += 1;
+    }
+
+    public function decreaseActiveModels() {
+	$this->activeModels -= 1;
+	if ($this->activeModels <= 0) {
+	    $this->activeModels = 0;
+	    $this->active = false;
+	}
+    }
+    
     /**
      * Get id
      *
@@ -171,5 +205,49 @@ class ModelGroup
     public function getCurrentVersion()
     {
         return $this->current_version;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return $this
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean $active
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set activeModels
+     *
+     * @param integer $activeModels
+     * @return $this
+     */
+    public function setActiveModels($activeModels)
+    {
+        $this->activeModels = $activeModels;
+        return $this;
+    }
+
+    /**
+     * Get activeModels
+     *
+     * @return integer $activeModels
+     */
+    public function getActiveModels()
+    {
+        return $this->activeModels;
     }
 }

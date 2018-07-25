@@ -11,6 +11,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   @MongoDB\Index(keys={"name"="asc"}),
  *   @MongoDB\Index(keys={"phoneNumber"="asc"}), 
  *   @MongoDB\Index(keys={"email"="asc"}),
+ *   @MongoDB\Index(keys={"active"="asc"}),
  *   @MongoDB\Index(keys={"permission"="asc"}),
  *  })
  */
@@ -25,7 +26,12 @@ class Owner
      * @MongoDB\Field(type="string")
      */
     protected $name;
-    
+
+    /**
+     * @MongoDB\Field(type="boolean")
+     */
+    protected $active;
+
     /**
      * @MongoDB\Field(type="string")
      */
@@ -50,7 +56,9 @@ class Owner
 	$this->name = $name;
 	$this->phoneNumber = $phoneNumber;
 	$this->email = $email;
-	$this->permission = $permission;	
+	$this->permission = $permission;
+	$this->active = true;
+	return $this;
     }
     
     /**
@@ -149,5 +157,27 @@ class Owner
     public function getPermission()
     {
         return $this->permission;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return $this
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean $active
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
 }
