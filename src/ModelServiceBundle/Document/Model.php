@@ -9,9 +9,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   collection="models",
  * )
  * @MongoDB\Indexes({
- *   @MongoDB\Index(keys={"subName"="asc"}),
- *   @MongoDB\Index(keys={"accuracy.training"="asc"}),
- *   @MongoDB\Index(keys={"accuracy.test"="asc"}),
+ *   @MongoDB\Index(keys={"name"="asc"}),
+ *   @MongoDB\Index(keys={"accuracy"="asc"}),
  *   @MongoDB\Index(keys={"feature_names"="asc"}), 
  *   @MongoDB\Index(keys={"train_start_time"="asc", "train_stop_time"="asc"}),
  *   @MongoDB\Index(keys={"train_stop_time"="asc"}),
@@ -32,11 +31,11 @@ class Model
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $subName;
+    protected $name;
     
 
     /**
-     * @MongoDB\Field(type="hash")
+     * @MongoDB\Field(type="float")
      */
     protected $accuracy;
 
@@ -82,6 +81,11 @@ class Model
      */
     protected $dataset;
 
+    /**                                                                                                                                                                                                  
+     * @MongoDB\Field(type="hash")                                                                                                                                                                   
+     */
+    protected $hyperparameters;
+
 
 
     /**
@@ -95,25 +99,25 @@ class Model
     }
 
     /**
-     * Set subName
+     * Set name
      *
-     * @param string $subName
+     * @param string $name
      * @return $this
      */
-    public function setSubName($subName)
+    public function setName($name)
     {
-        $this->subName = $subName;
+        $this->name = $name;
         return $this;
     }
 
     /**
-     * Get subName
+     * Get name
      *
-     * @return string $subName
+     * @return string $name
      */
-    public function getSubName()
+    public function getName()
     {
-        return $this->subName;
+        return $this->name;
     }
 
     /**
@@ -312,5 +316,27 @@ class Model
     public function getDataset()
     {
         return $this->dataset;
+    }
+
+    /**
+     * Set hyperparameters
+     *
+     * @param hash $hyperparameters
+     * @return $this
+     */
+    public function setHyperparameters($hyperparameters)
+    {
+        $this->hyperparameters = $hyperparameters;
+        return $this;
+    }
+
+    /**
+     * Get hyperparameters
+     *
+     * @return hash $hyperparameters
+     */
+    public function getHyperparameters()
+    {
+        return $this->hyperparameters;
     }
 }
