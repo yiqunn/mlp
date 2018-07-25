@@ -27,7 +27,7 @@ class Owner
     protected $name;
     
     /**
-     * @MongoDB\Field(type="float")
+     * @MongoDB\Field(type="string")
      */
     protected $phoneNumber;
 
@@ -42,6 +42,17 @@ class Owner
     protected $permission;
 
 
+
+    public function __construct($name,
+				$phoneNumber,
+				$email,
+				$permission) {
+	$this->name = $name;
+	$this->phoneNumber = $phoneNumber;
+	$this->email = $email;
+	$this->permission = $permission;	
+    }
+    
     /**
      * Get id
      *

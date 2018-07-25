@@ -67,8 +67,8 @@ doctrine_mongodb:
                 ssl: "%mongodb_ssl_mode%"
                 username: "%mongodb_username%"
                 password: "%mongodb_password%"
-            #driver_options:
-                #context: "app.mongodb.context_service"
+            driver_options:
+                context: "app.mongodb.context_service"
     document_managers:
         default:
             connection: default
