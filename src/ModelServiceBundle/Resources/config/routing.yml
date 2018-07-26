@@ -1,3 +1,0 @@
-model_service_homepage:
-    path:     /
-    defaults: { _controller: ModelServiceBundle:Default:index }
