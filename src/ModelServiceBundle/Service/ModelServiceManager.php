@@ -105,7 +105,8 @@ class ModelServiceManager {
     } // end of creating model
 
 
-    public function deleteModel($modelGroupName, $ownerName,
+    // in order for us to reverse back conviniently, just set model to be inactive
+    public function removeModel($modelGroupName, $ownerName,
 				$modelSubName, &$res) {
 
 	// 1) find the modelGroup
@@ -119,13 +120,13 @@ class ModelServiceManager {
 	$owner = null;
 	$modelGroup = null;
 	
-	if (!$this->findOwnerAndModelGroup($ownerName, $name, $owner, $modelGroup, $res)) {
+	if (!$this->findOwnerAndModelGroup($ownerName, $modelGroupName, $owner, $modelGroup, $res)) {
 	    return false;
 	}
 
 	if (!$modelGroup) {
 	    $err = "model group with owner {$ownerName} and name {$modelGroupName} does not exist, ".
-		"quit removing model. ";
+		"quit removing model.";
 	    $res["errs"][] = $err;
 	    $this->logger->error($err);
 	    return false;	    
@@ -135,12 +136,12 @@ class ModelServiceManager {
 	// 2) find the model use modelGroup and modelSubName
 	$model = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
 	    ->field("subName")->equals($modelSubName)
-	    ->field("modelGroup")->equals($modelGroup)
+	    ->field("model_group")->equals($modelGroup)
 	    ->getQuery()
 	    ->getSingleResult();
 
 	if (!$model) {
-	    $err = "Model with subName {$modelSubName} and modelGroup" . $modelGroup->getId() .
+	    $err = "Model with subName {$modelSubName} and modelGroup " . $modelGroup->getId() .
 		" does not exist before, quit removing model.";
 	    $res["errs"][] = $err;
 	    $this->logger->error($err);
@@ -153,7 +154,7 @@ class ModelServiceManager {
 	    if ($model == $modelGroup->getCurrentVersion()) { // if the model is the current version of the modelGroup
 		// trace back to the second last version of the modelGroup
 		$curModel = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
-		    ->field("modelGroup")->equals($modelGroup)
+		    ->field("model_group")->equals($modelGroup)
 		    ->sort("createdAt", "desc")
 		    ->getQuery()
 		    ->getSingleResult();
@@ -161,7 +162,7 @@ class ModelServiceManager {
 		
 	    }
 	}
-
+	$this->dm->flush();
 	return true;       	
     } // end of removing models
 
@@ -207,7 +208,7 @@ class ModelServiceManager {
 	// 2) loop through all modelGroups
 	foreach ($modelGroups as $modelGroup) {
 	    $models = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
-		->field("modelGroup")->equals($modelGroup)
+		->field("model_group")->equals($modelGroup)
 		->field("active")->equals(true)
 		->getQuery()
 		->execute();
@@ -219,7 +220,7 @@ class ModelServiceManager {
 		    $maxNum = $tmpNum;
 		} elseif ($tmpNum == $maxNum) { // if the accuracy is equal to the max, add it
 		                                // to the array
-		    $maxModels[] = array($model);
+		    $maxModels[] = $model;
 		}
 	    }	    
 	}
@@ -253,20 +254,21 @@ class ModelServiceManager {
 	$lastTrainedModels = array(); // we can have some models with the same traning end time
 	$lastTrainedTime = null;
 	foreach ($modelGroups as $modelGroup) {
-	    $model = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
-		->field("modelGroup")->equals($modelGroup)
+	    $models = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
+		->field("model_group")->equals($modelGroup)
 		->field("active")->equals(true)
-		->sort("train_stop_time", "desc")
 		->getQuery()
-		->getSingleResult();
-	    $tmpTrainedTime = $model->getTrainStopTime();
-	    if (!$lastTrainedTime || $lastTrainedTime < $tmpTrainedTime) {
-		$lastTrainedTime = $lastTrainedTime;
-		$lastTrainedModels = array($model);
-	    } elseif ($lastTrainedTime == $tmpTrainedTime) {
-		$lastTrainedModels[] = $model;
+		->execute();
+
+	    foreach ($models as $model) {
+		$tmpTrainedTime = $model->getTrainEndTime();
+		if ((!$lastTrainedTime) || $lastTrainedTime < $tmpTrainedTime) {
+		    $lastTrainedTime = $tmpTrainedTime;
+		    $lastTrainedModels = array($model);
+		} elseif ($lastTrainedTime == $tmpTrainedTime) {
+		    $lastTrainedModels[] = $model;
+		}
 	    }
-	    
 	}
 
 	return $lastTrainedModels;
