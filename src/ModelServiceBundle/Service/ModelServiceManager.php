@@ -191,11 +191,12 @@ class ModelServiceManager {
     // get model by id should be relatively easy to implement
 
     // Get most accurate model for a given model name
-    public function getMostAccurateModel($modelName) {
+    public function getMostAccurateModel($modelGroupName, &$res) {
 
+	$res = array("errs" => array());
 	// 1) find all the modelGroups
 	$modelGroups = $this->dm->createQueryBuilder("ModelServiceBundle:ModelGroup")
-	    ->field("name")->equals($modelName)
+	    ->field("name")->equals($modelGroupName)
 	    ->field("active")->equals(true)
 	    ->getQuery()
 	    ->execute();
@@ -216,13 +217,17 @@ class ModelServiceManager {
 		if ($tmpNum > $maxNum) {
 		    $maxModels = array($model);
 		    $maxNum = $tmpNum;
-		} elseif ($tmpNum == $maxNum) { // if the accuracy is bigger than the max, add it
+		} elseif ($tmpNum == $maxNum) { // if the accuracy is equal to the max, add it
 		                                // to the array
 		    $maxModels[] = array($model);
 		}
 	    }	    
 	}
 
+	if (empty($maxModels)) {
+	    $res["errs"][] = "No model found using model group name {$modelGroupName}.";
+	    return false;
+	}
 	return $maxModels;	
     } // end of getMostAccurateModel
 
