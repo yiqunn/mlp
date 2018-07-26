@@ -18,9 +18,11 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   @MongoDB\Index(keys={"dataset.test"="asc"}),
  *   @MongoDB\Index(keys={"model_group"="asc"}),
  *   @MongoDB\Index(keys={"active"="asc"}),
+ *   @MongoDB\Index(keys={"createdAt"="asc"}),
  *   @MongoDB\Index(keys={"training_methods"="asc"}),
  *   @MongoDB\Index(keys={"optimization_methods"="asc"}),
  *  })
+ * @MongoDB\HasLifecycleCallbacks()
  */
 class Model
 {
@@ -55,6 +57,12 @@ class Model
      * @MongoDB\Field(type="date")                                                                                                                                                                   
      */
     protected $training_end_time;
+
+    /**                                                                                                                                                                                                    
+     * @MongoDB\Field(type="date")                                                                                                                                                                   
+     */
+    protected $createdAt;
+
 
 
     /**                                                                                                                                                                                                    
@@ -95,6 +103,14 @@ class Model
     protected $hyperparameters;
 
 
+
+    /**
+     * @MongoDB\PrePersist
+     */
+
+    public function setPrePersistCreatedAt() {
+	$this->createdAt = new \DateTime("now");
+    }
 
 
 
@@ -383,5 +399,27 @@ class Model
     public function getActive()
     {
         return $this->active;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param date $createdAt
+     * @return $this
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return date $createdAt
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

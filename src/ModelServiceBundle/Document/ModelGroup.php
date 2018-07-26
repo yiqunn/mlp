@@ -10,7 +10,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  * @MongoDB\Indexes({
  *   @MongoDB\Index(keys={"name"="asc"}),
  *   @MongoDB\Index(keys={"accuracy"="asc"}),
- *   @MongoDB\Index(keys={"owner"="asc"}),
+ *   @MongoDB\Index(keys={"owners"="asc"}),
  *   @MongoDB\Index(keys={"active"="asc"}), 
  *   @MongoDB\Index(keys={"current_version"="asc"}),
  *   @MongoDB\Index(keys={"algorithm"="asc"}),
@@ -40,10 +40,10 @@ class ModelGroup
     protected $active;
 
     /**                                                                                                                                                                                                    
-     * @MongoDB\ReferenceOne(targetDocument="UserBundle\Document\Owner",
-     *                       simple=true)                                                                                                                                                              
+     * @MongoDB\ReferenceMany(targetDocument="UserBundle\Document\Owner",
+     *				simple=true)                                                                                                                                                              
      */
-    protected $owner;
+    protected $owners;
 
     /**                                                                                                                                                                                                    
      * @MongoDB\Field(type="string")                                                                                                                                                                   
@@ -65,10 +65,10 @@ class ModelGroup
 
 
 
-    public function __construct($name, $owner)
+    public function __construct($name, $owners)
     {
 	$this->name = $name;
-	$this->owner = $owner;
+	$this->owners = $owners;
 	$this->active = true;
 	$this->activeModels = 0;
         return $this;
@@ -141,27 +141,6 @@ class ModelGroup
         return $this->accuracy;
     }
 
-    /**
-     * Set owner
-     *
-     * @param string $owner
-     * @return $this
-     */
-    public function setOwner($owner)
-    {
-        $this->owner = $owner;
-        return $this;
-    }
-
-    /**
-     * Get owner
-     *
-     * @return string $owner
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
 
     /**
      * Set algorithm
@@ -249,5 +228,35 @@ class ModelGroup
     public function getActiveModels()
     {
         return $this->activeModels;
+    }
+
+    /**
+     * Add owner
+     *
+     * @param UserBundle\Document\Owner $owner
+     */
+    public function addOwner(\UserBundle\Document\Owner $owner)
+    {
+        $this->owners[] = $owner;
+    }
+
+    /**
+     * Remove owner
+     *
+     * @param UserBundle\Document\Owner $owner
+     */
+    public function removeOwner(\UserBundle\Document\Owner $owner)
+    {
+        $this->owners->removeElement($owner);
+    }
+
+    /**
+     * Get owners
+     *
+     * @return \Doctrine\Common\Collections\Collection $owners
+     */
+    public function getOwners()
+    {
+        return $this->owners;
     }
 }
