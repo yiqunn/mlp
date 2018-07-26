@@ -10,6 +10,9 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Monolog\Logger;
 
 
+use ModelServiceBundle\Document\Model;
+use ModelServiceBundle\Document\ModelGroup;
+
 class ModelServiceManager {
 
     private $dm;          // document manager
@@ -61,7 +64,7 @@ class ModelServiceManager {
 	    $this->dm->persist($modelGroup);
 	    $this->logger->debug("Created modelGroup with name {$name} for owner " .
 				 $owner->getName());
-	    $this->flush();
+	    $this->dm->flush();
 	}
 	
 	// 2) add one more model in this model group, and change the current version to this model,
@@ -69,7 +72,7 @@ class ModelServiceManager {
 	
 	$model = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
 	    ->field("subName")->equals($subName)
-	    ->field("modelGroup")->equals($modelGroup)
+	    ->field("model_group")->equals($modelGroup)
 	    ->getQuery()
 	    ->getSingleResult();
 
@@ -82,6 +85,13 @@ class ModelServiceManager {
 	}
 
 	// if model does not exist, continue creating model
+	if (is_string($train_start_time)) {
+	    $train_start_time = new \DateTime($train_start_time);
+	}
+	if (is_string($train_stop_time)) {
+	    $train_stop_time = new \DateTime($train_stop_time);
+	}
+
 	$model = new Model($subName, $modelGroup, $accuracy, $feature_names,
 			   $hyperparameters, $train_start_time, $train_stop_time);
 	$this->dm->persist($model);

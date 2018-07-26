@@ -19,7 +19,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   @MongoDB\Index(keys={"model_group"="asc"}),
  *   @MongoDB\Index(keys={"active"="asc"}),
  *   @MongoDB\Index(keys={"createdAt"="asc"}),
- *   @MongoDB\Index(keys={"training_methods"="asc"}),
+ *   @MongoDB\Index(keys={"train_methods"="asc"}),
  *   @MongoDB\Index(keys={"optimization_methods"="asc"}),
  *  })
  * @MongoDB\HasLifecycleCallbacks()
@@ -51,12 +51,12 @@ class Model
     /**                                                                                                                                                                                                    
      * @MongoDB\Field(type="date")                                                                                                                                                                   
      */
-    protected $training_start_time;
+    protected $train_start_time;
 
     /**                                                                                                                                                                                                    
      * @MongoDB\Field(type="date")                                                                                                                                                                   
      */
-    protected $training_end_time;
+    protected $train_end_time;
 
     /**                                                                                                                                                                                                    
      * @MongoDB\Field(type="date")                                                                                                                                                                   
@@ -79,7 +79,7 @@ class Model
 
     /**                                                                                                                                                                                                         * @MongoDB\Field(type="collection")                                                                                                                                                                   
      */
-    protected $training_methods;
+    protected $train_methods;
     
     /**                                                                                                                                                                                                   
      * @MongoDB\Field(type="collection")                                                                                                                                                                   
@@ -118,7 +118,7 @@ class Model
 				$hyperparameters=null, $train_start_time=null, $train_stop_time=null)
     {
 	$this->subName = $subName;
-	$this->modelGroup = $modelGroup;
+	$this->model_group = $modelGroup;
 	$this->accuracy = $accuracy;
 	$this->feature_names = $feature_names;
 	$this->hyperparameters = $hyperparameters;
@@ -182,47 +182,47 @@ class Model
     }
 
     /**
-     * Set trainingStartTime
+     * Set trainStartTime
      *
-     * @param date $trainingStartTime
+     * @param date $trainStartTime
      * @return $this
      */
-    public function setTrainingStartTime($trainingStartTime)
+    public function setTrainStartTime($trainStartTime)
     {
-        $this->training_start_time = $trainingStartTime;
+        $this->train_start_time = $trainStartTime;
         return $this;
     }
 
     /**
-     * Get trainingStartTime
+     * Get trainStartTime
      *
-     * @return date $trainingStartTime
+     * @return date $trainStartTime
      */
-    public function getTrainingStartTime()
+    public function getTrainStartTime()
     {
-        return $this->training_start_time;
+        return $this->train_start_time;
     }
 
     /**
-     * Set trainingEndTime
+     * Set trainEndTime
      *
-     * @param date $trainingEndTime
+     * @param date $trainEndTime
      * @return $this
      */
-    public function setTrainingEndTime($trainingEndTime)
+    public function setTrainEndTime($trainEndTime)
     {
-        $this->training_end_time = $trainingEndTime;
+        $this->train_end_time = $trainEndTime;
         return $this;
     }
 
     /**
-     * Get trainingEndTime
+     * Get trainEndTime
      *
-     * @return date $trainingEndTime
+     * @return date $trainEndTime
      */
-    public function getTrainingEndTime()
+    public function getTrainEndTime()
     {
-        return $this->training_end_time;
+        return $this->train_end_time;
     }
 
     /**
@@ -248,25 +248,25 @@ class Model
     }
 
     /**
-     * Set trainingMethods
+     * Set trainMethods
      *
-     * @param collection $trainingMethods
+     * @param collection $trainMethods
      * @return $this
      */
-    public function setTrainingMethods($trainingMethods)
+    public function setTrainMethods($trainMethods)
     {
-        $this->training_methods = $trainingMethods;
+        $this->train_methods = $trainMethods;
         return $this;
     }
 
     /**
-     * Get trainingMethods
+     * Get trainMethods
      *
-     * @return collection $trainingMethods
+     * @return collection $trainMethods
      */
-    public function getTrainingMethods()
+    public function getTrainMethods()
     {
-        return $this->training_methods;
+        return $this->train_methods;
     }
 
     /**
