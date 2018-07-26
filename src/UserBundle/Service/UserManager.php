@@ -27,7 +27,8 @@ class UserManager {
 	$this->dm = $dm;	
     }
 
-    public function createOwner($name, $phoneNumber, $email, $permission="read") {
+    public function createOwner($name, $phoneNumber, $email, $permission="read", &$res=null) {
+	$res["errs"] = array();
 	// YN: 072218, find if member with name  has been create before
 	$owner = $this->dm->getRepository("UserBundle:Owner")
 	    ->createQueryBuilder()
@@ -43,7 +44,9 @@ class UserManager {
 	    $this->dm->persist($owner);
 	    $this->dm->flush();
 	} else {
-	    $this->logger->warning("User already exist with {$name}, {$phoneNumber}, {$email}");
+	    $err = "User already exist with {$name}, {$phoneNumber}, {$email}";
+	    $res["errs"][] = $err;
+	    $this->logger->error($err);
 	}
 	return $owner;
     } // end of createOwner
