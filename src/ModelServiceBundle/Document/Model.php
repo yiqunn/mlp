@@ -127,6 +127,19 @@ class Model
         return $this;
     }
 
+
+    public function toArray() {
+	$result = array();
+	$result["modelName"] = $this->subName;
+	$result["modelGroupName"] = $this->modelGroup->getName();
+	$result["accuracy"] = $this->accuracy;
+	$result["feature_names"] = $this->feature_names;
+	$result["hypterparameters"] = $this->hyperparameters;
+	$result["train_start_time"] = $this->train_start_time;
+	$result["train_stop_time"] = $this->train_stop_time;
+        return $result;
+    }
+
     /**
      * Get id
      *
