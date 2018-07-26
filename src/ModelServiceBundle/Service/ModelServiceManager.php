@@ -57,7 +57,7 @@ class ModelServiceManager {
 	// 1) if the model group has not been created before, create the model group first,
 	//    model group is identified as owner + model name
 	if (!$modelGroup) {
-	    $modelGroup = new ModelGroup($name, $owner);
+	    $modelGroup = new ModelGroup($name, array($owner));
 	    $this->dm->persist($modelGroup);
 	    $this->logger->debug("Created modelGroup with name {$name} for owner " .
 				 $owner->getName());
@@ -140,6 +140,16 @@ class ModelServiceManager {
 	    // 4) set the modelGroup to be inactive if it has no active model	    
 	    $model->setActive(false);
 	    $modelGroup->decreaseActiveModels();
+	    if ($model == $modelGroup->getCurrentVersion()) { // if the model is the current version of the modelGroup
+		// trace back to the second last version of the modelGroup
+		$curModel = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
+		    ->field("modelGroup")->equals($modelGroup)
+		    ->sort("createdAt", "desc")
+		    ->getQuery()
+		    ->getSingleResult();
+		$modelGroup->setCurrentVersion($curModel);
+		
+	    }
 	}
 
 	return true;       	
@@ -160,10 +170,90 @@ class ModelServiceManager {
 
 	$modelGroup = $this->dm->createQueryBuilder("ModelServiceBundle:ModelGroup")
 	    ->field("name")->equals($modelGroupName)
-	    ->field("owner")->equals($owner)
+	    ->field("owners")->equals($owner)
 	    ->getQuery()
 	    ->getSingleResult();
 
 	return true;
+    }
+
+
+    // get model by id should be relatively easy to implement
+
+    // Get most accurate model for a given model name
+    public function getMostAccurateModel($modelName) {
+
+	// 1) find all the modelGroups
+	$modelGroups = $this->dm->createQueryBuilder("ModelServiceBundle:ModelGroup")
+	    ->field("name")->equals($modelName)
+	    ->field("active")->equals(true)
+	    ->getQuery()
+	    ->execute();
+	
+	$maxNum = 0; // mark the largest accuracy
+	$maxModels = array(); // restore all models with the largest accuracy
+
+	// 2) loop through all modelGroups
+	foreach ($modelGroups as $modelGroup) {
+	    $models = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
+		->field("modelGroup")->equals($modelGroup)
+		->field("active")->equals(true)
+		->getQuery()
+		->execute();
+	    // 3) loop through all models under that modelGroup
+	    foreach ($models as $model) {
+		$tmpNum = $model->getAccuracy();
+		if ($tmpNum > $maxNum) {
+		    $maxModels = array($model);
+		    $maxNum = $tmpNum;
+		} elseif ($tmpNum == $maxNum) { // if the accuracy is bigger than the max, add it
+		                                // to the array
+		    $maxModels[] = array($model);
+		}
+	    }	    
+	}
+
+	return $maxModels;	
+    } // end of getMostAccurateModel
+
+    // Get last model trained for a given model owner
+    public function getLastTrainedModel($ownerName, &$res) {
+
+	$owner = $this->dm->getRepository("UserBundle:Owner")
+	    ->findOneByName($ownerName);
+	if (!$owner) {
+	    $err = "owner with name {$ownerName} does not exist, needs to be added first. ";
+	    $res["errs"][] = $err;
+	    $this->logger->error($err);
+	    return false;
+	}
+
+	$modelGroups = $this->dm->createQueryBuilder("ModelServiceBundle:ModelGroup")
+	    ->field("active")->equals(true)
+	    ->field("owners")->equals($owner)
+	    ->getQuery()
+	    ->execute();
+
+
+	$lastTrainedModels = array(); // we can have some models with the same traning end time
+	$lastTrainedTime = null;
+	foreach ($modelGroups as $modelGroup) {
+	    $model = $this->dm->createQueryBuilder("ModelServiceBundle:Model")
+		->field("modelGroup")->equals($modelGroup)
+		->field("active")->equals(true)
+		->sort("train_stop_time", "desc")
+		->getQuery()
+		->getSingleResult();
+	    $tmpTrainedTime = $model->getTrainStopTime();
+	    if (!$lastTrainedTime || $lastTrainedTime < $tmpTrainedTime) {
+		$lastTrainedTime = $lastTrainedTime;
+		$lastTrainedModels = array($model);
+	    } elseif ($lastTrainedTime == $tmpTrainedTime) {
+		$lastTrainedModels[] = $model;
+	    }
+	    
+	}
+
+	return $lastTrainedModels;
     }
 }
