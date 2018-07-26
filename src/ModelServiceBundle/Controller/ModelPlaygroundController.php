@@ -166,7 +166,7 @@ class ModelPlaygroundController extends Controller {
 	$modelServiceMgr = $this->get("model_service_manager");
 	$res = array();
 	
-	if (!$lastTrainedModels = $modelServiceMgr->createModel($ownerName, $res)) {
+	if (!$lastTrainedModels = $modelServiceMgr->getLastTrainedModel($ownerName, $res)) {
 	    $result['errors'] = $res["errs"];
 	    $response->setData($result);
 	    $response->setStatusCode("400"); 
