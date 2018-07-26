@@ -28,9 +28,50 @@ class ModelPlaygroundController extends Controller {
 
     public function mlpApiOkAction() {
 
+	$modelServiceMgr = $this->get("model_service_manager");
 	return new Response('<?xml version="1.0" encoding="UTF-8"?><Response></Response>',
 			    200,  // ok
 			    array('content-type' => 'text/xml'));
 
     }
+
+
+    /**
+     * @Route("/mlp/createModel",
+     *        name="mlp_createModel")
+     *
+     */
+
+    public function mlpCreateModelAction(Request $request) {
+
+	$response = new JsonResponse();
+	$result = array();
+	$respondCode = null;
+	
+	$jsonStr = utf8_encode($request->getContent());
+	$jsonAry = json_decode($jsonStr, TRUE);
+
+	$modelGroupName = isset($jsonAry['name']) ? $jsonAry['name'] : "";
+	$modelName = isset($jsonAry['subName']) ? $jsonAry['subName'] : "";	
+	$accuracy = isset($jsonAry['accuracy']) ? $jsonAry['accuracy'] : "";
+	$ownerName = isset($jsonAry['ownerName']) ? $jsonAry['ownerName'] : "";
+	$featureNames = isset($jsonAry['featureNames']) ? $jsonAry['featureNames'] : "";
+	$hyperparameters = isset($jsonAry['hyperparameters']) ? $jsonAry['hyperparameters'] : "";
+	$train_start_time = isset($jsonAry['train_start_time']) ? $jsonAry['train_start_time'] : "";
+	$train_stop_time = isset($jsonAry['train_stop_time']) ? $jsonAry['train_stop_time'] : "";
+
+	$modelServiceMgr = $this->get("model_service_manager");
+	$res = array();
+	if (!$modelServiceMgr->createModel($modelGroupName, $modelName, $accuracy,
+					   $ownerName, $featureNames, $hyperparameters,
+					   $train_start_time, $train_stop_time, $res)) {
+
+	    $result['errors'] = $res["errs"];
+	    $response->setData($result);
+	    $response->setStatusCode("400"); 
+	}
+	return $response;
+    }
+
+    //public function createModel
 }
