@@ -1,0 +1,4 @@
+mlpService:
+    resource: "@ModelServiceBundle/Controller/"
+    type:     annotation
+    prefix:   /
