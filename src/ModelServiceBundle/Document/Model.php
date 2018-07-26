@@ -12,8 +12,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  *   @MongoDB\Index(keys={"subName"="asc"}),
  *   @MongoDB\Index(keys={"accuracy"="asc"}),
  *   @MongoDB\Index(keys={"feature_names"="asc"}), 
- *   @MongoDB\Index(keys={"train_start_time"="asc", "train_stop_time"="asc"}),
- *   @MongoDB\Index(keys={"train_stop_time"="asc"}),
+ *   @MongoDB\Index(keys={"train_start_time"="asc", "train_end_time"="asc"}),
+ *   @MongoDB\Index(keys={"train_end_time"="asc"}),
  *   @MongoDB\Index(keys={"dataset.training"="asc"}),
  *   @MongoDB\Index(keys={"dataset.test"="asc"}),
  *   @MongoDB\Index(keys={"model_group"="asc"}),
@@ -115,7 +115,7 @@ class Model
 
 
     public function __construct($subName, $modelGroup, $accuracy=null, $feature_names=null,
-				$hyperparameters=null, $train_start_time=null, $train_stop_time=null)
+				$hyperparameters=null, $train_start_time=null, $train_end_time=null)
     {
 	$this->subName = $subName;
 	$this->model_group = $modelGroup;
@@ -123,7 +123,8 @@ class Model
 	$this->feature_names = $feature_names;
 	$this->hyperparameters = $hyperparameters;
 	$this->train_start_time = $train_start_time;
-	$this->train_stop_time = $train_stop_time;
+	$this->train_end_time = $train_end_time;
+	$this->active = true;
         return $this;
     }
 
@@ -131,12 +132,13 @@ class Model
     public function toArray() {
 	$result = array();
 	$result["modelName"] = $this->subName;
-	$result["modelGroupName"] = $this->modelGroup->getName();
+	$result["modelGroupName"] = $this->model_group->getName();
 	$result["accuracy"] = $this->accuracy;
 	$result["feature_names"] = $this->feature_names;
 	$result["hypterparameters"] = $this->hyperparameters;
 	$result["train_start_time"] = $this->train_start_time;
-	$result["train_stop_time"] = $this->train_stop_time;
+	$result["train_end_time"] = $this->train_end_time;
+	$result["active"] = $this->active;
         return $result;
     }
 
