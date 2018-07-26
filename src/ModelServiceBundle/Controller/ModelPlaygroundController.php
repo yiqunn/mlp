@@ -69,9 +69,117 @@ class ModelPlaygroundController extends Controller {
 	    $result['errors'] = $res["errs"];
 	    $response->setData($result);
 	    $response->setStatusCode("400"); 
+	} else {
+	    $response->setStatusCode("200"); 
+	}
+	
+	return $response;
+    }
+
+
+    /**
+     * @Route("/mlp/removeModel",
+     *        name="mlp_removeModel")
+     *
+     */
+
+    public function mlpRemoveModelAction(Request $request) {
+
+	$response = new JsonResponse();
+	$result = array();
+	$respondCode = null;
+	
+	$jsonStr = utf8_encode($request->getContent());
+	$jsonAry = json_decode($jsonStr, TRUE);
+
+	$modelGroupName = isset($jsonAry['name']) ? $jsonAry['name'] : "";
+	$modelName = isset($jsonAry['subName']) ? $jsonAry['subName'] : "";	
+	$ownerName = isset($jsonAry['ownerName']) ? $jsonAry['ownerName'] : "";
+
+	$modelServiceMgr = $this->get("model_service_manager");
+	$res = array();
+	if (!$modelServiceMgr->removeModel($modelGroupName, $ownerName, $modelName, $res)) {
+
+	    $result['errors'] = $res["errs"];
+	    $response->setData($result);
+	    $response->setStatusCode("400"); 
+	} else {
+	    $response->setStatusCode("200"); 
 	}
 	return $response;
     }
 
-    //public function createModel
+
+    /**
+     * @Route("/mlp/getMostAccurateModel",
+     *        name="mlp_getMostAccurateModel")
+     *
+     */
+
+    public function mlpGetMostAccurateModelAction(Request $request) {
+
+	$response = new JsonResponse();
+	$result = array();
+	$respondCode = null;
+	
+	$jsonStr = utf8_encode($request->getContent());
+	$jsonAry = json_decode($jsonStr, TRUE);
+
+	$modelGroupName = isset($jsonAry['name']) ? $jsonAry['name'] : "";
+	$modelServiceMgr = $this->get("model_service_manager");
+	$res = array();
+	if (!$models = $modelServiceMgr->getMostAccurateModel($modelGroupName, 
+							      $res)) {
+	    
+	    $result['errors'] = $res["errs"];
+	    $response->setData($result);
+	    $response->setStatusCode("400"); 
+	} else {
+	    $response->setStatusCode("200");
+	    $data = array();
+	    foreach ($models as $m) {
+		$data[] = $m->toArray();
+	    }
+	    $result['data'] = $data;
+	    $response->setData($result);
+	}
+
+	return $response;
+    }
+
+    /**
+     * @Route("/mlp/getLastTrainedModel",
+     *        name="mlp_getLastTrainedModel")
+     *
+     */
+
+    public function mlpGetLastTrainedModelAction(Request $request) {
+
+	$response = new JsonResponse();
+	$result = array();
+	$respondCode = null;
+	
+	$jsonStr = utf8_encode($request->getContent());
+	$jsonAry = json_decode($jsonStr, TRUE);
+
+	$ownerName = isset($jsonAry['ownerName']) ? $jsonAry['ownerName'] : "";
+	$modelServiceMgr = $this->get("model_service_manager");
+	$res = array();
+	
+	if (!$lastTrainedModels = $modelServiceMgr->createModel($ownerName, $res)) {
+	    $result['errors'] = $res["errs"];
+	    $response->setData($result);
+	    $response->setStatusCode("400"); 
+	} else {
+	    $response->setStatusCode("200");
+	    $data = array();
+	    foreach ($lastTrainedModels as $m) {
+		$data[] = $m->toArray();
+	    }
+	    $result['data'] = $data;
+	    $response->setData($result);
+	}
+	return $response;
+    }
+    
 }
